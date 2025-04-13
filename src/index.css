@@ -40,7 +40,18 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
+  
+  /* Allow text selection only for inputs and editable elements */
+  input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+  
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -188,17 +199,18 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
   background-color: rgba(255, 218, 119, 0.2);
   color: rgb(255, 218, 119);
-  border: 1px solid rgba(255, 218, 119, 0.3);
+  border: 2px solid rgba(255, 218, 119, 0.3);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px);
+  padding: 0;
 }
 
 .scroll-to-top.visible {
@@ -208,8 +220,47 @@ section {
 }
 
 .scroll-to-top:hover {
-  background-color: rgba(255, 218, 119, 0.3);
-  transform: translateY(-3px);
+  background-color: rgba(255, 218, 119, 0.4);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(255, 218, 119, 0.3);
+}
+
+/* Arrow animation */
+.scroll-to-top .arrow-icon {
+  animation: pulse 2s infinite;
+  transition: all 0.3s ease;
+}
+
+.scroll-to-top:hover .arrow-icon {
+  transform: translateY(-3px) scale(1.1);
+  animation: bounce 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
 }
 
 /* Sticky navbar styles */

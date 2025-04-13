@@ -1,9 +1,11 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar'
-import { HeroSection } from './components/HeroSection'
+import HeroSection from './components/HeroSection'
 import { SmoothScrollWrapper } from './components/SmoothScrollWrapper'
 import { ScrollToTop } from './components/ScrollToTop'
 import { ForStudentsStartupsSection } from './components/ForStudentsStartupsSection'
+import { PageTransition } from './components/PageTransition';
 
 // Lazy load components for better performance
 const ServicesSection = lazy(() => import('./components/ServicesSection').then(module => ({ default: module.ServicesSection })));
@@ -24,33 +26,78 @@ const LoadingSpinner = () => (
 );
 
 function App() {
+  const [currentPath, setCurrentPath] = useState('');
+
+  // Track current path for transitions
+  useEffect(() => {
+    const handlePathChange = () => {
+      setCurrentPath(window.location.pathname || '/');
+    };
+
+    // Initialize
+    handlePathChange();
+
+    // Listen for popstate events (browser back/forward)
+    window.addEventListener('popstate', handlePathChange);
+    
+    // Create an observer to watch for pushState/replaceState
+    const observer = new MutationObserver(() => {
+      if (currentPath !== window.location.pathname) {
+        handlePathChange();
+      }
+    });
+    
+    // Start observing the document
+    observer.observe(document.body, { 
+      childList: true,
+      subtree: true,
+      attributes: true
+    });
+
+    return () => {
+      window.removeEventListener('popstate', handlePathChange);
+      observer.disconnect();
+    };
+  }, [currentPath]);
+
   return (
     <SmoothScrollWrapper>
-      <div className="bg-black text-white min-h-screen">
-        <Navbar />
-        <main>
-          <HeroSection />
-          
-          <ForStudentsStartupsSection />
-          
-          <Suspense fallback={<LoadingSpinner />}>
-            <ServicesSection />
-            <TeamSection />
-            <ProjectsSection />
-            <PricingSection />
-            <WhyChooseUsSection />
-            <TestimonialsSection />
-            <StatsSection />
-            <CTASection />
-          </Suspense>
-        </main>
-        
-        <Suspense fallback={<LoadingSpinner />}>
-          <Footer />
-        </Suspense>
-        
-        <ScrollToTop />
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={currentPath}
+          className="bg-black text-white min-h-screen"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+        >
+          <Navbar />
+          <PageTransition>
+            <main>
+              <HeroSection />
+              
+              <ForStudentsStartupsSection />
+              
+              <Suspense fallback={<LoadingSpinner />}>
+                <ServicesSection />
+                <TeamSection />
+                <ProjectsSection />
+                <PricingSection />
+                <WhyChooseUsSection />
+                <TestimonialsSection />
+                <StatsSection />
+                <CTASection />
+              </Suspense>
+            </main>
+            
+            <Suspense fallback={<LoadingSpinner />}>
+              <Footer />
+            </Suspense>
+            
+            <ScrollToTop />
+          </PageTransition>
+        </motion.div>
+      </AnimatePresence>
     </SmoothScrollWrapper>
   )
 }

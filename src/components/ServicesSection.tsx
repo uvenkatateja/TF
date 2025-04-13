@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion} from 'framer-motion';
 
 import { ServicesBackground } from './ui/services-background';
@@ -159,8 +160,16 @@ export function ServicesSection() {
           className="mt-20 text-center"
         >
           <a 
-            href="#contact" 
+            href="/contact" 
             className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-black font-medium hover:from-gold-400 hover:to-gold-500 transition-all duration-300 text-lg shadow-lg shadow-gold-500/20 hover:shadow-xl hover:shadow-gold-500/30 hover:-translate-y-1"
+            onClick={(e) => {
+              e.preventDefault();
+              const contactSection = document.getElementById('contact');
+              if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+              }
+              window.history.pushState(null, '', '/contact');
+            }}
           >
             Discuss Your Project 
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">

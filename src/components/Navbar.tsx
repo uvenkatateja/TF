@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Logo } from './Logo';
+import { smoothScroll } from '../utils/smoothScroll';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -27,13 +28,39 @@ export function Navbar() {
 
   // Navigation links
   const navLinks = [
-    { name: 'Home', href: '#' },
-    { name: 'Services', href: '#services' },
-    { name: 'Team', href: '#team' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', href: '/' },
+    { name: 'Services', href: '/services' },
+    { name: 'Team', href: '/team' },
+    { name: 'Projects', href: '/projects' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Contact', href: '/contact' },
   ];
+
+  // Handle smooth navigation
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    
+    // Extract the section ID from the href
+    const sectionId = href === '/' ? '' : href.replace('/', '');
+    
+    // Find the corresponding element to scroll to
+    const element = sectionId ? document.getElementById(sectionId) : null;
+    
+    if (sectionId && element) {
+      smoothScroll(sectionId, 800);
+    } else if (!sectionId) {
+      // Scroll to top for home
+      smoothScroll(0, 800);
+    }
+    
+    // Update URL without hash
+    window.history.pushState(null, '', href);
+    
+    // Close mobile menu if open
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  };
 
   return (
     <header className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 w-11/12 max-w-6xl rounded-full border border-gold-500/30 ${
@@ -46,7 +73,11 @@ export function Navbar() {
       <div className="px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="flex items-center">
+          <a 
+            href="#" 
+            className="flex items-center"
+            onClick={(e) => handleNavClick(e, '#')}
+          >
             <Logo />
           </a>
           
@@ -57,13 +88,15 @@ export function Navbar() {
                 key={link.name}
                 href={link.href}
                 className="text-white/85 hover:text-white transition-colors"
+                onClick={(e) => handleNavClick(e, link.href)}
               >
                 {link.name}
               </a>
             ))}
             <a 
-              href="#contact"
+              href="/contact"
               className="px-4 py-2 rounded-lg bg-gold-500 text-black font-medium hover:bg-gold-400 transition-colors"
+              onClick={(e) => handleNavClick(e, '/contact')}
             >
               Get Started
             </a>
@@ -129,15 +162,15 @@ export function Navbar() {
                 key={link.name}
                 href={link.href}
                 className="block py-2 text-white/85 hover:text-white transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, link.href)}
               >
                 {link.name}
               </a>
             ))}
             <a 
-              href="#contact"
+              href="/contact"
               className="block mt-4 px-4 py-2 rounded-lg bg-gold-500 text-center text-black font-medium hover:bg-gold-400 transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={(e) => handleNavClick(e, '/contact')}
             >
               Get Started
             </a>

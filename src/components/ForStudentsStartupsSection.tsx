@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion, useScroll, useTransform, useAnimation } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -189,6 +190,9 @@ export function ForStudentsStartupsSection() {
   
   const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.7, 1, 1, 0.7]);
+  
+  // Add error state for catching render errors
+  const [renderError, setRenderError] = useState(false);
 
   const audiences = [
     {
@@ -304,49 +308,78 @@ export function ForStudentsStartupsSection() {
     }
   };
 
-  return (
-    <section id="for-you" className="relative py-32 min-h-screen bg-black overflow-hidden flex items-center">
-      {/* Restore the 3D background */}
-      {!isMobile && <ThreeBackground />}
-      
-      <motion.div 
-        ref={containerRef}
-        className="max-w-6xl mx-auto px-4 relative z-10 w-full"
-        style={{ y, opacity }}
-      >
-        <motion.div 
-          className="text-center mb-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <motion.h2 
-            className="text-3xl md:text-5xl font-bold text-gold-500 mb-4"
-            variants={titleVariants}
-          >
-            For Students & Startups
-          </motion.h2>
-          
-          <motion.p 
-            className="text-gold-300 max-w-2xl mx-auto text-lg"
-            variants={subtitleVariants}
-          >
+  // If an error occurs during rendering
+  if (renderError) {
+    return (
+      <section id="for-you" className="relative pt-0 pb-16 min-h-[90vh] bg-black overflow-hidden flex items-center">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold text-gold-500 mb-4">For Students & Startups</h2>
+          <p className="text-gold-300 max-w-2xl mx-auto text-lg mb-8">
             Solutions tailored to your unique needs and goals, whether you're launching a venture or building your portfolio.
-          </motion.p>
-        </motion.div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {audiences.map((audience, index) => (
-            <AudienceCard 
-              key={audience.title}
-              title={audience.title}
-              description={audience.description}
-              icon={audience.icon}
-              delay={index * 0.15}
-            />
-          ))}
+          </p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {audiences.map((audience) => (
+              <div key={audience.title} className="bg-black/90 p-8 rounded-xl border border-gold-500/30">
+                <div className="mb-6 text-gold-500">{audience.icon}</div>
+                <h3 className="text-2xl font-semibold text-gold-400 mb-3">{audience.title}</h3>
+                <p className="text-gold-200/80 mb-6">{audience.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </motion.div>
-    </section>
-  );
+      </section>
+    );
+  }
+
+  try {
+    return (
+      <section id="for-you" className="relative pt-0 pb-16 min-h-[90vh] bg-black overflow-hidden flex items-center">
+        {!isMobile && <ThreeBackground />}
+        
+        <motion.div 
+          ref={containerRef}
+          className="max-w-6xl mx-auto px-4 relative z-10 w-full"
+          style={{ y, opacity }}
+        >
+          <motion.div 
+            className="text-center mb-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <motion.h2 
+              className="text-3xl md:text-5xl font-bold text-gold-500 mb-4"
+              variants={titleVariants}
+            >
+              For Students & Startups
+            </motion.h2>
+            
+            <motion.p 
+              className="text-gold-300 max-w-2xl mx-auto text-lg"
+              variants={subtitleVariants}
+            >
+              Solutions tailored to your unique needs and goals, whether you're launching a venture or building your portfolio.
+            </motion.p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {audiences.map((audience, index) => (
+              <AudienceCard 
+                key={audience.title}
+                title={audience.title}
+                description={audience.description}
+                icon={audience.icon}
+                delay={index * 0.15}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </section>
+    );
+  } catch (error) {
+    console.error("Render error in ForStudentsStartupsSection:", error);
+    setRenderError(true);
+    return null; // This will be replaced by the error UI on the next render
+  }
 } 

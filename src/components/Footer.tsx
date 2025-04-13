@@ -8,6 +8,21 @@ export function Footer() {
     <a 
       href={href} 
       className="text-gold-300 hover:text-gold-500 transition-colors"
+      onClick={(e) => {
+        e.preventDefault();
+        // Update URL without hash
+        window.history.pushState(null, '', href);
+        // Smooth scroll to section
+        const sectionId = href === '/' ? '' : href.replace('/', '');
+        if (sectionId) {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }}
     >
       {children}
     </a>
@@ -29,30 +44,30 @@ export function Footer() {
     {
       title: "Navigation",
       links: [
-        { label: "Home", href: "#home" },
-        { label: "Services", href: "#services" },
-        { label: "Team", href: "#team" },
-        { label: "Projects", href: "#projects" },
-        { label: "Pricing", href: "#pricing" },
-        { label: "Contact", href: "#contact" },
+        { label: "Home", href: "/" },
+        { label: "Services", href: "/services" },
+        { label: "Team", href: "/team" },
+        { label: "Projects", href: "/projects" },
+        { label: "Pricing", href: "/pricing" },
+        { label: "Contact", href: "/contact" },
       ]
     },
     {
       title: "Services",
       links: [
-        { label: "Website Development", href: "#services" },
-        { label: "Web App Prototyping", href: "#services" },
-        { label: "UI/UX Design", href: "#services" },
-        { label: "Custom Projects", href: "#services" },
+        { label: "Website Development", href: "/services" },
+        { label: "Web App Prototyping", href: "/services" },
+        { label: "UI/UX Design", href: "/services" },
+        { label: "Custom Projects", href: "/services" },
       ]
     },
     {
       title: "Company",
       links: [
-        { label: "About Us", href: "#about" },
-        { label: "Our Team", href: "#team" },
-        { label: "Projects", href: "#projects" },
-        { label: "Testimonials", href: "#testimonials" },
+        { label: "About Us", href: "/about" },
+        { label: "Our Team", href: "/team" },
+        { label: "Projects", href: "/projects" },
+        { label: "Testimonials", href: "/testimonials" },
       ]
     },
   ];

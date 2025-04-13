@@ -43,7 +43,9 @@ const Stat = ({ value, label, delay }: StatProps) => {
       <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3">
         <AnimatedCounter 
           value={value} 
-          className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 to-gold-600" 
+          className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 to-gold-600"
+          start={0}
+          duration={1.5}
         />
       </h3>
       
@@ -70,7 +72,7 @@ export function StatsSection() {
       label: "Projects Built"
     },
     {
-      value: "10+",
+      value: "7+",
       label: "Team Members"
     },
     {
@@ -84,7 +86,7 @@ export function StatsSection() {
   ];
 
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-16 relative overflow-hidden">
       {/* Three.js background */}
       <ThreeBackground type="particles" intensity={1.5} />
       
@@ -99,7 +101,7 @@ export function StatsSection() {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.7 }}
           viewport={{ once: true }}
-          className="text-center mb-14"
+          className="text-center mb-10"
         >
           <motion.h2 
             className="text-3xl md:text-4xl font-bold mb-4 inline-block text-transparent bg-clip-text bg-gradient-to-r from-gold-300 to-gold-600"

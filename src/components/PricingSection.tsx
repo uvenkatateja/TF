@@ -134,9 +134,12 @@ interface PricingTierProps {
   features: string[];
   highlighted?: boolean;
   delay: number;
+  team?: string;
+  buttonText?: string;
+  emoji?: string;
 }
 
-const PricingTier = ({ name, price, features, highlighted = false, delay }: PricingTierProps) => {
+const PricingTier = ({ name, price, features, highlighted = false, delay, team, buttonText = "Get Started", emoji }: PricingTierProps) => {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
@@ -187,7 +190,10 @@ const PricingTier = ({ name, price, features, highlighted = false, delay }: Pric
         )}
         
         <div className={`${highlighted ? 'pt-8' : 'pt-2'}`}>
-          <h3 className="text-xl font-semibold text-gold-400 mb-3">{name}</h3>
+          <h3 className="text-xl font-semibold text-gold-400 mb-3">
+            {emoji && <span className="mr-2">{emoji}</span>}
+            {name}
+          </h3>
           <div className="mb-6">
             <span className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold-300 to-gold-600">{price}</span>
           </div>
@@ -230,8 +236,20 @@ const PricingTier = ({ name, price, features, highlighted = false, delay }: Pric
             ))}
           </ul>
           
+          {team && (
+            <motion.div 
+              className="mb-6 text-gold-300/70 text-sm border-t border-gold-500/20 pt-4"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: delay + 0.3 }}
+              viewport={{ once: true }}
+            >
+              {team}
+            </motion.div>
+          )}
+          
           <motion.a 
-            href="#contact" 
+            href="/contact" 
             className={`w-full block text-center py-3 px-4 rounded-lg transition-colors font-medium ${
               highlighted 
                 ? 'bg-gradient-to-r from-gold-600 to-gold-400 text-black hover:from-gold-400 hover:to-gold-600' 
@@ -240,8 +258,16 @@ const PricingTier = ({ name, price, features, highlighted = false, delay }: Pric
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            onClick={(e) => {
+              e.preventDefault();
+              const contactSection = document.getElementById('contact');
+              if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+              }
+              window.history.pushState(null, '', '/contact');
+            }}
           >
-            Get Started
+            {buttonText}
           </motion.a>
         </div>
       </motion.div>
@@ -279,40 +305,50 @@ export function PricingSection() {
   const pricingTiers = [
     {
       name: "Starter",
-      price: "From $499",
+      price: "From ₹2,999",
+      emoji: "🧩",
       features: [
-        "Simple landing page",
-        "Mobile responsive",
+        "One-page portfolio or landing site",
+        "Fully mobile responsive",
         "Basic SEO optimization",
         "Contact form integration",
         "2 revision rounds",
       ],
+     
+      buttonText: "Get Started"
     },
     {
       name: "Pro",
-      price: "From $999",
+      price: "From ₹7,499",
+      emoji: "🚀",
       features: [
-        "Multi-page website",
-        "Custom animations",
-        "Advanced SEO package",
+        "Multi-page modern website",
+        "Custom animations & UI polish",
+        "Advanced SEO & analytics setup",
         "Social media integration",
-        "CMS implementation",
+        "CMS (e.g., Sanity/WordPress/Contentful)",
         "4 revision rounds",
       ],
+     
       highlighted: true,
+      buttonText: "Get Started"
     },
     {
-      name: "Custom",
-      price: "Get Quote",
+      name: "Custom — Built for You",
+      price: "Get a Quote",
+      emoji: "⚙️",
       features: [
-        "Web application development",
-        "Custom functionality",
-        "Database integration",
-        "User authentication",
-        "Admin dashboard",
+        "Full-stack Web App (Frontend + Backend)",
+        "Custom functionality tailored to your idea",
+        "Database setup & integrations",
+        "User authentication (JWT, OAuth, etc.)",
+        "Admin dashboard and analytics",
+        "IoT dashboard if needed (Raghava leads)",
         "Unlimited revisions",
-        "Ongoing support",
+        "Ongoing support & maintenance",
       ],
+      team: "",
+      buttonText: "Let's Talk"
     },
   ];
 
@@ -403,6 +439,9 @@ export function PricingSection() {
               features={tier.features}
               highlighted={tier.highlighted}
               delay={index * 0.1}
+              team={tier.team}
+              buttonText={tier.buttonText}
+              emoji={tier.emoji}
             />
           ))}
         </div>

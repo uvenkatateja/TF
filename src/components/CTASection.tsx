@@ -41,9 +41,17 @@ export function CTASection() {
             viewport={{ once: true }}
           >
             <a 
-              href="#contact" 
+              href="/contact" 
               className="inline-block px-8 py-4 rounded-lg bg-gold-500 text-black font-medium text-lg hover:bg-gold-400 focus:ring-4 focus:ring-gold-500/30 transition-colors"
               aria-label="Contact us to start your project"
+              onClick={(e) => {
+                e.preventDefault();
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                  contactSection.scrollIntoView({ behavior: 'smooth' });
+                }
+                window.history.pushState(null, '', '/contact');
+              }}
             >
               Contact Us Now
             </a>

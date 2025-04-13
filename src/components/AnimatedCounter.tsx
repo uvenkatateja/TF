@@ -4,9 +4,16 @@ import { motion, useSpring, useTransform } from 'framer-motion';
 interface AnimatedCounterProps {
   value: string;
   className?: string;
+  start?: number;
+  duration?: number;
 }
 
-export function AnimatedCounter({ value, className = '' }: AnimatedCounterProps) {
+export function AnimatedCounter({ 
+  value, 
+  className = '', 
+  start = 0, 
+  duration = 1 
+}: AnimatedCounterProps) {
   // Extract numeric part and suffix
   const numericMatch = value.match(/^(\d+)(\+|\%)?/);
   
@@ -23,10 +30,11 @@ export function AnimatedCounter({ value, className = '' }: AnimatedCounterProps)
     setHasMounted(true);
   }, []);
   
-  const spring = useSpring(0, { 
+  const spring = useSpring(start, { 
     stiffness: 100, 
     damping: 30,
-    restDelta: 0.001 
+    restDelta: 0.001,
+    duration: duration * 1000 // Convert to milliseconds
   });
   
   const display = useTransform(spring, (current) => {
