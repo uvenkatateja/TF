@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CardBody, CardContainer, CardItem } from "./3d-card";
 
@@ -7,7 +7,9 @@ interface ProjectCard3DProps {
   description: string;
   tags: string[];
   imageUrl: string;
-  index: number;
+  index?: number;
+  fallbackImage?: string;
+  fallbackGradient?: string;
 }
 
 // Tag component for project categories
@@ -22,13 +24,40 @@ export const ProjectCard3D: React.FC<ProjectCard3DProps> = ({
   description,
   tags,
   imageUrl,
-  index
+  index = 0,
+  fallbackImage,
+  fallbackGradient
 }) => {
   // Fallback image - gold gradient pattern
-  const fallbackImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23B8860B;stop-opacity:0.3' /%3E%3Cstop offset='100%25' style='stop-color:%23000000;stop-opacity:0.7' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23grad1)' /%3E%3C/svg%3E";
+  const defaultFallbackImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23B8860B;stop-opacity:0.3' /%3E%3Cstop offset='100%25' style='stop-color:%23000000;stop-opacity:0.7' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23grad1)' /%3E%3C/svg%3E";
   
   // State to track hover for additional effects
   const [isHovered, setIsHovered] = useState(false);
+  const [imgSrc, setImgSrc] = useState(imageUrl);
+  const [imgError, setImgError] = useState(false);
+
+  // Handle image error
+  useEffect(() => {
+    // Immediately use fallback for empty URLs without logging warnings
+    if (!imageUrl || imageUrl.trim() === '') {
+      setImgError(true);
+      return;
+    }
+
+    const img = new Image();
+    img.src = imageUrl;
+    img.onload = () => {
+      setImgSrc(imageUrl);
+      setImgError(false);
+    };
+    img.onerror = () => {
+      console.warn(`Failed to load image: ${imageUrl}, using fallback`);
+      setImgError(true);
+      if (fallbackImage) {
+        setImgSrc(fallbackImage);
+      }
+    };
+  }, [imageUrl, fallbackImage]);
 
   return (
     <motion.div
@@ -47,16 +76,30 @@ export const ProjectCard3D: React.FC<ProjectCard3DProps> = ({
           
           {/* Background Image with Gradient Overlay */}
           <div className="absolute inset-0 z-0">
-            <div 
-              className="w-full h-full"
-              style={{
-                backgroundImage: `url(${imageUrl || fallbackImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center'
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-80" />
-            </div>
+            {!imgError ? (
+              <div 
+                className="w-full h-full"
+                style={{
+                  backgroundImage: `url(${imgSrc})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-80" />
+              </div>
+            ) : (
+              <div 
+                className="w-full h-full"
+                style={{
+                  backgroundImage: fallbackGradient || 
+                    (fallbackImage ? `url(${fallbackImage})` : defaultFallbackImage),
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-80" />
+              </div>
+            )}
           </div>
 
           {/* Content */}

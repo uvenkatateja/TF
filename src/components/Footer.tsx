@@ -84,7 +84,7 @@ export function Footer() {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-gold-500 font-bold text-2xl mb-4">Traid-Forge</h2>
+              <h2 className="text-gold-500 font-bold text-2xl mb-4">Triad Forge</h2>
               <p className="text-gold-300/80 mb-6 max-w-xs">
                 Building the future of digital experiences with innovative solutions.
               </p>

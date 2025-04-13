@@ -29,7 +29,7 @@ export function SparklesPreview() {
               delay: 0.2
             }}
           >
-            Traid Forge
+            Triad Forge
           </motion.h1>
           
           {/* Title hover effect */}

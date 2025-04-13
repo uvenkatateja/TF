@@ -62,7 +62,7 @@ export function WhyChooseUsSection() {
           >
             <span className="text-sm md:text-base uppercase tracking-widest text-gold-500 font-medium mb-3 block">Why Choose Us</span>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-500">Traid-Forge</span>?
+              Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-500">Triad Forge</span>?
             </h2>
           </motion.div>
           
@@ -73,7 +73,7 @@ export function WhyChooseUsSection() {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             viewport={{ once: true }}
           >
-            At Traid-Forge, we combine technical expertise with creative innovation to deliver exceptional digital solutions that exceed your expectations.
+            At Triad Forge, we combine technical expertise with creative innovation to deliver exceptional digital solutions that exceed your expectations.
           </motion.p>
           
           {/* Animated line separator */}
