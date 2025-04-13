@@ -6,6 +6,11 @@ import { useInView } from 'react-intersection-observer';
 
 import { Mesh } from 'three';
 
+// Import team member images with correct filenames
+import bhaveshImg from '../assets/bhavesh.jpg';
+import raghavaImg from '../assets/raghava.jpg';
+import venkataTejaImg from '../assets/venkatateja.jpg';
+
 // Animated background sphere
 const AnimatedSphere = () => {
   const sphereRef = useRef<Mesh>(null);
@@ -41,41 +46,14 @@ interface TeamMemberProps {
   quote: string;
   delay: number;
   isActive: boolean;
+  image: string;
 }
 
-const generateGradient = (name: string): string => {
-  // Generate a unique gradient based on name
-  const colors = [
-    ["#4158D0", "#C850C0", "#FFCC70"],
-    ["#0093E9", "#80D0C7"],
-    ["#8EC5FC", "#E0C3FC"],
-    ["#D9AFD9", "#97D9E1"],
-    ["#FBAB7E", "#F7CE68"],
-    ["#85FFBD", "#FFFB7D"]
-  ];
-  
-  // Simple hash function to select a color
-  const hashCode = name.split('').reduce((hash, char) => {
-    return char.charCodeAt(0) + ((hash << 5) - hash);
-  }, 0);
-  
-  const colorIndex = Math.abs(hashCode) % colors.length;
-  const selectedColors = colors[colorIndex];
-  
-  if (selectedColors.length === 2) {
-    return `linear-gradient(135deg, ${selectedColors[0]} 0%, ${selectedColors[1]} 100%)`;
-  } else {
-    return `linear-gradient(135deg, ${selectedColors[0]} 0%, ${selectedColors[1]} 50%, ${selectedColors[2]} 100%)`;
-  }
-};
-
-const TeamMember = ({ name, role, quote, delay, isActive }: TeamMemberProps) => {
+const TeamMember = ({ name, role, quote, delay, isActive, image }: TeamMemberProps) => {
   const [ref, inView] = useInView({
     triggerOnce: false,
     threshold: 0.2,
   });
-
-  const gradient = generateGradient(name);
 
   return (
     <motion.div 
@@ -106,33 +84,22 @@ const TeamMember = ({ name, role, quote, delay, isActive }: TeamMemberProps) => 
       <div className="h-64 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10" />
         
-        {/* Use gradient background instead of image */}
+        {/* Use actual image with enhanced handling */}
         <motion.div 
           className="w-full h-full"
-          style={{
-            background: gradient,
-          }}
           initial={{ scale: 1.2 }}
           animate={inView ? { scale: 1 } : { scale: 1.2 }}
           transition={{ duration: 0.5, delay: delay * 0.2 }}
         >
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <motion.div
-              className="w-24 h-24 rounded-full flex items-center justify-center bg-gold-500/20 backdrop-blur-sm border border-gold-500/40"
-              initial={{ scale: 0, rotateZ: -30 }}
-              animate={inView ? { 
-                scale: 1, 
-                rotateZ: 0,
-                transition: { 
-                  type: 'spring', 
-                  stiffness: 200, 
-                  damping: 15, 
-                  delay: delay * 0.3 
-                } 
-              } : { scale: 0, rotateZ: -30 }}
-            >
-              <span className="text-gold-200 text-4xl font-bold">{name[0]}</span>
-            </motion.div>
+          {/* Enhanced image styling for better display */}
+          <img 
+            src={image} 
+            alt={`${name} - ${role}`}
+            className="absolute inset-0 w-full h-full object-cover object-top"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 hover:opacity-75 transition-opacity duration-300">
+            {/* Gradient overlay for better text readability */}
           </div>
         </motion.div>
       </div>
@@ -191,16 +158,19 @@ export function TeamSection() {
       name: "Venkata Teja",
       role: "UI/UX Expert & MERN Developer",
       quote: "Creating beautiful and intuitive user interfaces with a focus on user experience",
+      image: venkataTejaImg,
     },
     {
       name: "Bhavesh",
       role: "Backend Specialist",
       quote: "Specializes in server-side development and creating robust backend solutions",
+      image: bhaveshImg,
     },
     {
       name: "Raghava",
       role: "IoT Developer",
       quote: "Expert in IoT development and creating connected solutions",
+      image: raghavaImg,
     },
   ];
   
@@ -308,6 +278,7 @@ export function TeamSection() {
                   quote={teamMembers[currentIndex].quote}
                   delay={0}
                   isActive={true}
+                  image={teamMembers[currentIndex].image}
                 />
               </motion.div>
             </AnimatePresence>
@@ -389,6 +360,7 @@ export function TeamSection() {
                       quote={member.quote}
                       delay={index * 0.1}
                       isActive={isActive}
+                      image={member.image}
                     />
                   </motion.div>
                 );

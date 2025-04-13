@@ -27,12 +27,23 @@ export function Footer() {
   // Navigation sections
   const navSections = [
     {
+      title: "Navigation",
+      links: [
+        { label: "Home", href: "#home" },
+        { label: "Services", href: "#services" },
+        { label: "Team", href: "#team" },
+        { label: "Projects", href: "#projects" },
+        { label: "Pricing", href: "#pricing" },
+        { label: "Contact", href: "#contact" },
+      ]
+    },
+    {
       title: "Services",
       links: [
         { label: "Website Development", href: "#services" },
         { label: "Web App Prototyping", href: "#services" },
         { label: "UI/UX Design", href: "#services" },
-        { label: "Custom Student Projects", href: "#services" },
+        { label: "Custom Projects", href: "#services" },
       ]
     },
     {
@@ -42,15 +53,6 @@ export function Footer() {
         { label: "Our Team", href: "#team" },
         { label: "Projects", href: "#projects" },
         { label: "Testimonials", href: "#testimonials" },
-      ]
-    },
-    {
-      title: "Resources",
-      links: [
-        { label: "For Startups", href: "#for-you" },
-        { label: "For Students", href: "#for-you" },
-        { label: "Pricing", href: "#pricing" },
-        { label: "Contact", href: "#contact" },
       ]
     },
   ];
@@ -73,11 +75,11 @@ export function Footer() {
               </p>
               <div className="space-y-2">
                 <p className="text-gold-300">
-                  <strong className="text-gold-400">Email:</strong> hello@traid-forge.com
+                  <strong className="text-gold-400">Email:</strong> contact.triadforge@gmail.com
                 </p>
-                <p className="text-gold-300">
+                {/* <p className="text-gold-300">
                   <strong className="text-gold-400">Campus:</strong> Innovation Hub, College Campus
-                </p>
+                </p> */}
               </div>
             </motion.div>
           </div>

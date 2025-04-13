@@ -35,12 +35,12 @@ function App() {
           
           <Suspense fallback={<LoadingSpinner />}>
             <ServicesSection />
-            <WhyChooseUsSection />
-            <ProjectsSection />
             <TeamSection />
+            <ProjectsSection />
+            <PricingSection />
+            <WhyChooseUsSection />
             <TestimonialsSection />
             <StatsSection />
-            <PricingSection />
             <CTASection />
           </Suspense>
         </main>
