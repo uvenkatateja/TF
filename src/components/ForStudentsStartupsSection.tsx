@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, useScroll, useTransform, useAnimation } from 'framer-motion';
+import { motion, useScroll, useTransform, useAnimation, useReducedMotion } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Environment, MeshDistortMaterial } from '@react-three/drei';
@@ -50,12 +50,24 @@ const AudienceCard = ({ title, description, icon, delay }: AudienceCardProps) =>
   const controls = useAnimation();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
+  // Set mounted state
   useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
+  // Handle intersection observer
+  useEffect(() => {
+    if (!isMounted) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          controls.start('visible');
+          controls.start('visible').catch(err => {
+            console.warn('Animation error in AudienceCard:', err);
+          });
         }
       },
       { threshold: 0.2 }
@@ -70,7 +82,7 @@ const AudienceCard = ({ title, description, icon, delay }: AudienceCardProps) =>
         observer.unobserve(cardRef.current);
       }
     };
-  }, [controls]);
+  }, [controls, isMounted]);
 
   const cardVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -99,6 +111,7 @@ const AudienceCard = ({ title, description, icon, delay }: AudienceCardProps) =>
     <motion.div 
       ref={cardRef}
       className="relative bg-black/90 backdrop-blur-md p-8 rounded-xl border border-gold-500/30 hover:border-gold-500/70 transition-all shadow-lg hover:shadow-gold-500/20 overflow-hidden"
+      style={{ position: 'relative' }}
       initial="hidden"
       animate={controls}
       variants={cardVariants}
@@ -114,11 +127,11 @@ const AudienceCard = ({ title, description, icon, delay }: AudienceCardProps) =>
       {/* Background gradient effect */}
       <motion.div 
         className="absolute top-0 left-0 w-full h-full opacity-20 -z-10"
-        initial={{ background: `radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1), rgba(0, 0, 0, 0) 70%)` }}
-        animate={{ 
-          background: isHovered 
-            ? `radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.3), rgba(0, 0, 0, 0) 80%)` 
-            : `radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1), rgba(0, 0, 0, 0) 70%)`
+        style={{
+          background: isHovered
+            ? `radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.3), rgba(0, 0, 0, 0) 80%)`
+            : `radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1), rgba(0, 0, 0, 0) 70%)`,
+          position: 'absolute'
         }}
         transition={{ duration: 0.3 }}
       />
@@ -165,16 +178,51 @@ const AudienceCard = ({ title, description, icon, delay }: AudienceCardProps) =>
   );
 };
 
-// 3D Background component
-const ThreeBackground = () => {
+// 3D Background component with reduced complexity for mobile
+const ThreeBackground = ({ reducedMotion }: { reducedMotion: boolean }) => {
+  const [hasError, setHasError] = useState(false);
+
+  // Handle WebGL errors
+  useEffect(() => {
+    const handleError = () => {
+      console.warn("WebGL rendering failed, disabling 3D effects");
+      setHasError(true);
+    };
+
+    window.addEventListener('webglcontextlost', handleError);
+    window.addEventListener('error', (e) => {
+      if (e.message?.includes('WebGL') || e.message?.includes('THREE')) {
+        handleError();
+      }
+    });
+
+    return () => {
+      window.removeEventListener('webglcontextlost', handleError);
+    };
+  }, []);
+
+  if (hasError) {
+    return null;
+  }
+
   return (
     <div className="absolute inset-0 -z-10 opacity-40">
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+      <Canvas 
+        camera={{ position: [0, 0, 5], fov: 45 }}
+        onError={() => setHasError(true)}
+      >
         <ambientLight intensity={0.2} />
         <directionalLight position={[10, 10, 5]} intensity={0.5} />
-        <FloatingShape position={[-4, 2, -2]} color="#D4AF37" speed={0.5} scale={0.8} />
-        <FloatingShape position={[4, -2, -3]} color="#D4AF37" speed={0.7} scale={0.6} />
-        <FloatingShape position={[0, 3, -4]} color="#D4AF37" speed={0.3} scale={1.2} />
+        {/* Render fewer shapes when reduced motion is preferred */}
+        {!reducedMotion ? (
+          <>
+            <FloatingShape position={[-4, 2, -2]} color="#D4AF37" speed={0.5} scale={0.8} />
+            <FloatingShape position={[4, -2, -3]} color="#D4AF37" speed={0.7} scale={0.6} />
+            <FloatingShape position={[0, 3, -4]} color="#D4AF37" speed={0.3} scale={1.2} />
+          </>
+        ) : (
+          <FloatingShape position={[0, 0, -3]} color="#D4AF37" speed={0.3} scale={1} />
+        )}
         <Environment preset="city" />
       </Canvas>
     </div>
@@ -183,6 +231,7 @@ const ThreeBackground = () => {
 
 export function ForStudentsStartupsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
@@ -193,6 +242,8 @@ export function ForStudentsStartupsSection() {
   
   // Add error state for catching render errors
   const [renderError, setRenderError] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isLowPowerDevice, setIsLowPowerDevice] = useState(false);
 
   const audiences = [
     {
@@ -266,22 +317,25 @@ export function ForStudentsStartupsSection() {
     },
   ];
 
-  const [isMobile, setIsMobile] = useState(false);
-
+  // Check for mobile device and browser performance
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      
+      // Check for low-power devices
+      const lowPower = mobile || navigator.hardwareConcurrency <= 4 || 
+                      (prefersReducedMotion !== null && prefersReducedMotion);
+      setIsLowPowerDevice(lowPower);
     };
     
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    console.log("ForStudentsStartupsSection mounted");
-    
     return () => {
       window.removeEventListener('resize', checkMobile);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   const titleVariants = {
     hidden: { opacity: 0, y: -20 },
@@ -335,15 +389,21 @@ export function ForStudentsStartupsSection() {
   try {
     return (
       <section id="for-you" className="relative pt-0 pb-16 min-h-[90vh] bg-black overflow-hidden flex items-center">
-        {!isMobile && <ThreeBackground />}
+        {!isMobile && !isLowPowerDevice && 
+          <ThreeBackground reducedMotion={prefersReducedMotion || false} />}
         
         <motion.div 
           ref={containerRef}
           className="max-w-6xl mx-auto px-4 relative z-10 w-full"
-          style={{ y, opacity }}
+          style={{ 
+            ...(!isLowPowerDevice ? { y, opacity } : {}),
+            position: 'relative' // Explicitly set position for Framer Motion
+          }}
+          initial={{}}
         >
           <motion.div 
-            className="text-center mb-8"
+            className="text-center mb-8 relative"
+            style={{ position: 'relative' }} // Explicitly set position for Framer Motion
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}

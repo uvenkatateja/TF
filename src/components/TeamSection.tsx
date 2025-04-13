@@ -162,8 +162,8 @@ export function TeamSection() {
     },
     {
       name: "Bhavesh",
-      role: "Backend Specialist",
-      quote: "Specializes in server-side development and creating robust backend solutions",
+      role: "Backend Developer",
+      quote: "Handles in server-side development and creating robust backend solutions",
       image: bhaveshImg,
     },
     {

@@ -4,30 +4,36 @@ import { ProjectCard3D } from './ui/project-card-3d';
 import { ServicesBackground } from './ui/services-background';
 
 export function ProjectsSection() {
+  // NOTE: Project images are temporarily set to empty strings to avoid 404 errors
+  // TODO: Add proper image files to the public/images/projects directory later
   const projects = [
     {
       title: "StudyHub",
       description: "A collaborative platform for students to organize study groups and share resources.",
       tags: ["Web App", "College Club", "React"],
-      imageUrl: "/images/projects/studyhub.jpg",
+      // Temporarily using empty string - ProjectCard3D will use a fallback gradient
+      imageUrl: "",
     },
     {
       title: "Startup Landing",
       description: "Modern landing page design for a tech startup focused on AI solutions.",
       tags: ["Portfolio Website", "UI Design", "Next.js"],
-      imageUrl: "/images/projects/startup.jpg",
+      // Temporarily using empty string - ProjectCard3D will use a fallback gradient
+      imageUrl: "",
     },
     {
       title: "Event Planner",
       description: "Mobile-responsive application for managing college events and registrations.",
       tags: ["Web App", "Hackathon Winner", "Vue.js"],
-      imageUrl: "/images/projects/events.jpg",
+      // Temporarily using empty string - ProjectCard3D will use a fallback gradient
+      imageUrl: "",
     },
     {
       title: "Course Catalog",
       description: "Interactive course catalog with advanced filtering and recommendation features.",
       tags: ["Educational Tool", "React", "API Integration"],
-      imageUrl: "/images/projects/courses.jpg",
+      // Temporarily using empty string - ProjectCard3D will use a fallback gradient
+      imageUrl: "",
     },
   ];
 
