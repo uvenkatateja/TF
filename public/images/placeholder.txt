@@ -1,0 +1,9 @@
+This directory contains placeholder images for the Traid-Forge website.
+
+Image paths:
+- /images/project-showcase.png - Main showcase image on the homepage
+- /images/project-placeholder.jpg - Default placeholder for project images
+- /images/team/placeholder.jpg - Default placeholder for team member images
+- /images/team-at-work.jpg - Image for the "Why Choose Us" section
+
+ 

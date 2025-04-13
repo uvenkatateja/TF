@@ -1,0 +1,105 @@
+/* Accessibility enhancements */
+
+/* Focus styles */
+:focus-visible {
+  outline: 3px solid rgb(255, 184, 0, 0.5);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-none {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (forced-colors: active) {
+  * {
+    border-color: currentColor;
+  }
+  
+  button, 
+  a {
+    forced-color-adjust: none;
+  }
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip navigation for keyboard users */
+.skip-link {
+  background: rgb(255, 184, 0);
+  color: black;
+  font-weight: 700;
+  left: 50%;
+  padding: 8px;
+  position: absolute;
+  transform: translateY(-100%);
+  transition: transform 0.3s;
+}
+
+.skip-link:focus {
+  transform: translateY(0%);
+}
+
+/* Ensure proper contrast ratio for text on gold backgrounds */
+.bg-gold-500 {
+  color: black;
+}
+
+/* Override focus styles for dark mode */
+.dark :focus-visible {
+  outline-color: rgb(255, 184, 0, 0.7);
+}
+
+/* Skip to content link - allows keyboard users to skip navigation */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-to-content:focus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  padding: 15px;
+  background: #ffffff;
+  color: #000000;
+  z-index: 999999;
+  font-weight: bold;
+}
+
+/* Ensure all interactive elements have visible hover and focus states */
+button:hover,
+a:hover {
+  text-decoration: underline;
+} 
