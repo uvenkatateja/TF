@@ -207,7 +207,7 @@ export function Footer() {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            &copy; {currentYear} Triad Forge. All rights reserved.
+            &copy; {currentYear} Triad Forge | Student Powered Innovation. All rights reserved.
             
           </motion.div>
         </div>
