@@ -208,6 +208,7 @@ export function Footer() {
             viewport={{ once: true }}
           >
             &copy; {currentYear} Triad Forge. All rights reserved.
+            
           </motion.div>
         </div>
       </div>
