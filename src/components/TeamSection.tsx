@@ -96,7 +96,7 @@ const TeamMember = ({ name, role, quote, delay, isActive, image }: TeamMemberPro
           <img 
             src={image} 
             alt={`${name} - ${role}`}
-            className="absolute inset-0 w-full h-full object-cover object-top"
+            className={`absolute inset-0 w-full h-full object-cover ${name === "Narayan Soni" ? "object-center" : "object-top"}`}
             loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70 hover:opacity-75 transition-opacity duration-300">
