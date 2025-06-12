@@ -10,6 +10,7 @@ import { Mesh } from 'three';
 import bhaveshImg from '../assets/bhavesh.jpg';
 import raghavaImg from '../assets/raghava.jpg';
 import venkataTejaImg from '../assets/venkatateja.jpg';
+import narayanImg from '../assets/Narayan.jpg';
 
 // Animated background sphere
 const AnimatedSphere = () => {
@@ -154,6 +155,12 @@ export function TeamSection() {
   });
 
   const teamMembers = [
+    {
+      name: "Narayan Soni",
+      role: "Full Stack Developer",
+      quote: "Professional developer having experience in various domains from SDE, Cloud and AI/ML",
+      image: narayanImg,
+    },
     {
       name: "Venkata Teja",
       role: "UI/UX Expert & MERN Developer",
